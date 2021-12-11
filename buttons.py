@@ -1,9 +1,27 @@
 import tkinter
 
 
+
+background = "gray"
+
+
 window = tkinter.Tk() # Makes the window
 window.title("Clicker") # Window title
-window.configure(bg="gray") # Window background color
+window.configure(bg=background) # Window background color
+
+
+
+
+def mouse_enter(_):
+    window.configure(bg="yellow")
+
+
+def mouse_leave(_):
+    window.configure(bg=background)
+
+
+window.bind('<Enter>', mouse_enter)
+window.bind('<Leave>', mouse_leave)
 
 
 global button_with_num # Button with the number that changes
@@ -11,15 +29,25 @@ global button_with_num # Button with the number that changes
 
 # Change the number when the user clicks on 'up' or 'down'
 def change_num(text):
+    global background
+
+
     button_with_num['text'] += 1 if text == "up" else -1 # Change number
 
     # Change the window background
     if button_with_num['text'] < 0:
-        window.configure(bg="red")
+        background = "red"
+
+
+        window.configure(bg=background)
     elif button_with_num['text'] > 0:
-        window.configure(bg="green")
+        background = "green"
+
+        window.configure(bg=background)
     else:
-        window.configure(bg="gray")
+        background = "gray"
+
+        window.configure(bg=background)
 
 
 # Make the 3 buttons
