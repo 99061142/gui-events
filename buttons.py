@@ -1,8 +1,9 @@
 import tkinter
 
 
-
 background = "gray"
+previous_button = None # Text of the previous pressed button
+button_with_num = None # Button with the number that changes
 
 
 window = tkinter.Tk() # Makes the window
@@ -11,25 +12,30 @@ window.configure(bg=background) # Window background color
 
 
 
-
+# When the mouse hovers over the window
 def mouse_enter(_):
     window.configure(bg="yellow")
 
 
+# When the mouse leaves the window
 def mouse_leave(_):
     window.configure(bg=background)
 
 
-window.bind('<Enter>', mouse_enter)
-window.bind('<Leave>', mouse_leave)
 
-
-global button_with_num # Button with the number that changes
+# When the users double clicks on the button with the number
+def double_num_change(_):
+    if previous_button == "up":
+        button_with_num['text'] *= 3
+    
+    elif previous_button == "down":
+        button_with_num['text'] //= 3
 
 
 # Change the number when the user clicks on 'up' or 'down'
 def change_num(text):
     global background
+    global previous_button
 
 
     button_with_num['text'] += 1 if text == "up" else -1 # Change number
@@ -48,6 +54,9 @@ def change_num(text):
         background = "gray"
 
         window.configure(bg=background)
+
+
+    previous_button = text
 
 
 # Make the 3 buttons
@@ -91,7 +100,17 @@ def make_buttons():
         button.pack() # Add the button to the window
 
 
+def bindings():
+    window.bind('<Enter>', mouse_enter)
+    window.bind('<Leave>', mouse_leave)
+    button_with_num.bind('<Double-Button-1>', double_num_change)
+
+
+
+
 # If the code starts
 if __name__ == "__main__":
     make_buttons() # Makes the 3 buttons
+    bindings() # Add the bindings
+
     window.mainloop() # Open the window
