@@ -38,7 +38,16 @@ def change_num(text):
     global previous_button
 
 
-    button_with_num['text'] += 1 if text == "up" else -1 # Change number
+    # Change the bindings to a string
+    if text != "up" and text != "down" and type(text) is not int:
+        text = text.keysym.lower()
+
+
+    if text == "up" or text == "plus":
+        button_with_num['text'] += 1
+    else:
+        button_with_num['text'] -= 1
+
 
     # Change the window background
     if button_with_num['text'] < 0:
@@ -104,6 +113,11 @@ def bindings():
     window.bind('<Enter>', mouse_enter)
     window.bind('<Leave>', mouse_leave)
     button_with_num.bind('<Double-Button-1>', double_num_change)
+    window.bind("+", change_num)
+    window.bind("<Up>", change_num)
+    window.bind("-", change_num)
+    window.bind("<Down>", change_num)
+    window.bind("<space>", double_num_change)
 
 
 
