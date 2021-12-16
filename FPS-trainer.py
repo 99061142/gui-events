@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 import random
 
 
@@ -20,20 +21,16 @@ keybinds = {
 }
 
 
-time = 20 # Starting value for the time
-points = 0 # Starting value for the points
-button = None
+time = None # Starting value for the time
+points = None # Starting value for the points
+button = None # Random created button
 
 
-# Game over screen
-def game_over():
-    pass
-
-
+# Add the points when the user completed the bind
 def add_points(event):
-    global points # Points on the scoreboard
+    global points
 
-    bind = event.keysym.lower() # Bind 
+    bind = event.keysym.lower() # Bind what the user must do
 
     # Check how many points must be added, and unbind the bind
     if bind in keybinds['keyboard']:
@@ -47,16 +44,17 @@ def add_points(event):
 
     button.destroy() # Destroy the button
 
-    scoring_label() # Update the points in the scoreboard
+    scoreboard_text() # Update the points in the scoreboard
     random_keybind() # Add a new random button
 
 
-# Edit the scoreboard
-def scoring_label():
+# Scoreboard text
+def scoreboard_text():
     global time
     global points
 
-    scoreboard_str = f'Time remaining: {time}               {points} points' # Text 
+
+    scoreboard_str = f"Time remaining: {time}               {points} points" # Text 
     scoreboard.configure(text=scoreboard_str) # Edit the scoreboard
 
 
@@ -67,16 +65,18 @@ def countdown():
     # If the user has time left
     if time > 0:
         time -= 1 # Decrease the time
-        scoring_label() # Change the time on the lable
+        scoreboard_text() # Change the time on the lable
 
         window.after(1000, countdown) # After every second this function is called again
+    
+    # If the time is over
     else:
-        game_over() # Game over screen
+        game_over_screen() # Game over screen
 
 
-# Get a random keybind the user must make (with keyboard or click x amount of times on the button)
+# Make a button with a random bind and a random position
 def random_keybind():
-    global button # Button where the user can read what the bind is
+    global button # Random created button
 
     events = list(keybinds.keys()) # Make a list of the possible bind options
     event = random.choice(events) # Choose if its a keyboard or a button bind
@@ -95,16 +95,14 @@ def random_keybind():
         bind = f"<{bind['bind']}>" # Bind for the button
 
 
-    # Make a button on a random position with the text what the user must do
+    # Make a button with a random bind and a random position
     bind_button = tk.Button(
         window, 
         font=("arial", 15), 
         width=20
     )
-    
 
     scoreboard_height = scoreboard.winfo_height() # Height of the scoreboard
-
 
     width = random.randrange(scoreboard_height, window.winfo_width() // 2) # Random width position
     height = random.randrange(scoreboard_height * 2, window.winfo_height() // 4 * 3) # Random height position
@@ -115,20 +113,76 @@ def random_keybind():
     # If the keybind is for the keyboard
     if event == "keyboard": 
         bind_button['text'] = text # Text inside the button
-        window.bind(bind, add_points) # Bind for the points
+        window.bind(bind, add_points) # Bind for the keyboard
 
     # If the keybind is for the button
     else:
         bind_button['text'] = text # Text inside the button
-        bind_button.bind(bind, add_points) # Bind for the points
+        bind_button.bind(bind, add_points) # Bind for the button
 
     button = bind_button # Add the created button to the global button 
 
-# Starts the game
-def start():
-    start_button.destroy() # Destroy the start button
+
+# Game started
+def game(start_button):
+    start_button.destroy() # Destroy the starting button
+    
     countdown() # Starts the countdown
     random_keybind() # Add a random button
+
+
+# Starting screen
+def start_screen():
+    global time
+    global points
+
+    # Values when the player starts
+    time = 20
+    points = 0
+
+    # Make the button to start the game
+    start_button = tk.Button(
+        window, 
+        font=("arial", 15), 
+        width=20,
+        text='Press here to start'
+    )
+
+    start_button['command'] = lambda: game(start_button) # Function when the button gets pressed
+
+    start_button.pack(expand=True) # Add the button to the window
+
+
+# Game over screen
+def game_over_screen():
+    text = button['text'] # Button text
+
+    # If keybind was with the keyboard
+    if text in keybinds['keyboard']:
+        window.unbind(f"<{text}>")
+    
+    # If keybind was clicking the button
+    else:
+        button.unbind(f"<{text}>")
+
+
+    button.destroy() # Destroy the last random button
+
+    play_again = tk.messagebox.askyesno("Game over", f"Congratulations you have {points} points, wanna play again?") # Messagebox
+
+    if play_again:
+        start_screen() # Go to the start screen
+    else:
+        window.destroy() # Destroy the window
+
+
+
+
+
+
+
+
+
 
 
 # Make the scoreboard
@@ -141,21 +195,12 @@ scoreboard = tk.Label(
 
 scoreboard.pack(fill='x')
 
-# Make the button to start the game
-start_button = tk.Button(
-    window, 
-    font=("arial", 15), 
-    width=20,
-    text='Press here to start',
-    command=start
-)
-
-start_button.pack(expand=True)
-
 
 
 
 # If the code starts
 if __name__ == "__main__":
-    scoring_label()
-    window.mainloop()
+    start_screen() # Add the start screen
+    scoreboard_text() # Add the scoreboard
+
+    window.mainloop() # Show the window
