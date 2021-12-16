@@ -9,28 +9,6 @@ window.geometry("500x300") # Window size
 window.configure(bg="lightgray") # Window background
 
 
-# Make the scoring table
-label = tk.Label(
-    window,
-    bg="black",
-    fg="white",
-    font=('arial',15)
-)
-
-label.pack(fill='x')
-
-# Make the button to start the game
-start_button = tk.Button(
-    window, 
-    font=("arial", 15), 
-    width=20,
-    text='Press here to start',
-    command=start
-)
-
-start_button.pack(expand=True)
-
-
 # Keybinds for the keyboard / button
 keybinds = {
     'keyboard': ['w', 'a', 's', 'd', 'space'],
@@ -131,6 +109,28 @@ def start():
     start_button.destroy() # Destroy the start button
     countdown() # Starts the countdown
     random_keybind() # Add a random button
+
+
+# Make the scoring table
+label = tk.Label(
+    window,
+    bg="black",
+    fg="white",
+    font=('arial',15)
+)
+
+label.pack(fill='x')
+
+# Make the button to start the game
+start_button = tk.Button(
+    window, 
+    font=("arial", 15), 
+    width=20,
+    text='Press here to start',
+    command=start
+)
+
+start_button.pack(expand=True)
 
 
 
