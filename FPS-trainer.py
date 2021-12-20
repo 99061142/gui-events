@@ -225,7 +225,7 @@ def home_screen():
     time_entry.focus()
 
     # Submit button
-    login_button = tk.Button(start_screen, text="Login", command=lambda: login_clicked(start_screen))
+    login_button = tk.Button(start_screen, text="Submit", command=lambda: login_clicked(start_screen))
     login_button.pack(fill='x', expand=True, pady=10)
 
 
